@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outset - Find Outdoor Activities</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Landing Page with Location Input -->
+    <div id="landing-page" class="page active">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Find Your Next<br><span class="gradient-text">Outdoor Adventure</span></h1>
+                <p class="hero-subtitle">Enter your location to discover hiking, skiing, biking, and more near you!</p>
+
+                <div style="max-width: 500px; margin: 2rem auto 0;">
+                    <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <h3 style="margin: 0 0 1.5rem 0; font-size: 1.25rem;">Enter Your Location</h3>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">
+                                City
+                            </label>
+                            <input
+                                type="text"
+                                id="city-input"
+                                placeholder="e.g., Denver, Austin, Seattle"
+                                style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
+                            >
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">
+                                State
+                            </label>
+                            <select
+                                id="state-input"
+                                style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: white;"
+                            >
+                                <option value="">Select a state...</option>
+                                <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
+                                <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
+                            </select>
+                        </div>
+
+                        <button id="search-btn" class="cta-button" style="width: 100%;">
+                            🔍 Find Activities
+                        </button>
+
+                        <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: #6b7280;">
+                            We'll search OpenStreetMap for real outdoor locations
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Loading Page -->
+    <div id="loading-page" class="page">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+            <div style="font-size: 4rem; animation: spin 2s linear infinite;">🔍</div>
+            <h2 style="margin-top: 2rem; text-align: center;">Searching for Activities...</h2>
+            <p id="loading-status" style="color: #6b7280; margin-top: 1rem; text-align: center;">Processing your location...</p>
+            <div style="width: 300px; height: 4px; background: #e5e7eb; border-radius: 2px; margin-top: 2rem; overflow: hidden;">
+                <div id="progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #3b82f6); transition: width 0.3s;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activities Page -->
+    <div id="activities-page" class="page">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link active">Activities</a>
+                    <a href="#" id="nav-schedule" class="nav-link">My Schedule</a>
+                    <a href="#" id="change-location" class="nav-link">Change Location</a>
+                </div>
+            </div>
+        </nav>
+
+        <div style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+            <div style="margin-bottom: 2rem;">
+                <h1>Outdoor Activities</h1>
+                <p id="location-info" style="color: #6b7280; font-size: 1.1rem; margin-top: 0.5rem;">📍 Loading...</p>
+                <p id="results-count" style="color: #10b981; font-weight: 600; margin-top: 0.5rem;"></p>
+            </div>
+
+            <div id="activities-container"></div>
+        </div>
+    </div>
+
+    <!-- Schedule Page -->
+    <div id="schedule-page" class="page">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+                <div class="nav-links">
+                    <a href="#" id="nav-activities" class="nav-link">Activities</a>
+                    <a href="#" class="nav-link active">My Schedule</a>
+                </div>
+            </div>
+        </nav>
+
+        <div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+            <h1>My Planned Activities</h1>
+            <div id="schedule-container"></div>
+            <div id="empty-schedule" style="text-align: center; padding: 4rem; display: none;">
+                <div style="font-size: 4rem;">📅</div>
+                <h2>No activities scheduled yet</h2>
+                <p style="color: #6b7280;">Start exploring activities and add them to your schedule!</p>
+                <button id="back-to-activities" class="cta-button" style="margin-top: 1rem;">Browse Activities</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script src="final.js"></script>
+</body>
+</html>

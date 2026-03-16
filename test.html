@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Outset</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Find Your Next<br><span class="gradient-text">Outdoor Adventure</span></h1>
+                <p class="hero-subtitle">Test version - Click the button below</p>
+                <button id="get-started-btn" class="cta-button">Find Activities Near Me</button>
+                <p id="status"></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Activities Page -->
+    <div id="activities-page" class="page">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+            </div>
+        </nav>
+        <div style="padding: 2rem;">
+            <h1>Activities Page</h1>
+            <p>This is the activities page!</p>
+            <p id="location-info"></p>
+            <div id="activities-list"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Script loaded!');
+
+        // Simple page navigation
+        function showPage(pageId) {
+            console.log('Showing page:', pageId);
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                console.log('Page shown successfully');
+            } else {
+                console.error('Page not found:', pageId);
+            }
+        }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+
+            const button = document.getElementById('get-started-btn');
+            const status = document.getElementById('status');
+
+            if (!button) {
+                console.error('Button not found!');
+                return;
+            }
+
+            console.log('Button found, attaching listener');
+
+            button.addEventListener('click', async function() {
+                console.log('Button clicked!');
+                status.textContent = 'Button was clicked! Getting location...';
+
+                // Test geolocation
+                if (!navigator.geolocation) {
+                    status.textContent = 'Geolocation not supported';
+                    console.error('Geolocation not available');
+                    // Still show the page
+                    showPage('activities-page');
+                    document.getElementById('location-info').textContent = 'Using default location: San Francisco, CA';
+                    document.getElementById('activities-list').innerHTML = '<p>Sample activities would appear here</p>';
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async function(position) {
+                        console.log('Got position:', position.coords.latitude, position.coords.longitude);
+                        status.textContent = 'Location found! Loading activities...';
+
+                        // Show activities page
+                        showPage('activities-page');
+
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        document.getElementById('location-info').textContent = `Your location: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+                        // Try to get city name
+                        try {
+                            const response = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`,
+                                { headers: { 'User-Agent': 'Outset-App' } }
+                            );
+                            const data = await response.json();
+                            const city = data.address.city || data.address.town || data.address.village || 'Unknown';
+                            const state = data.address.state || '';
+                            document.getElementById('location-info').textContent = `Your location: ${city}, ${state}`;
+                            console.log('City:', city, state);
+                        } catch (error) {
+                            console.error('Geocoding error:', error);
+                        }
+
+                        // Generate sample activities
+                        const activities = [
+                            { name: 'Sunset Trail Hike', type: 'hiking', distance: 3.2 },
+                            { name: 'Rock Climbing', type: 'climbing', distance: 5.7 },
+                            { name: 'Bike Path Ride', type: 'biking', distance: 2.1 }
+                        ];
+
+                        let html = '<h2>Activities Near You:</h2>';
+                        activities.forEach(activity => {
+                            html += `<p>🥾 ${activity.name} - ${activity.distance} miles away</p>`;
+                        });
+
+                        document.getElementById('activities-list').innerHTML = html;
+                    },
+                    function(error) {
+                        console.error('Geolocation error:', error);
+                        status.textContent = `Location error: ${error.message}. Using default location...`;
+
+                        // Still show the page with default location
+                        setTimeout(() => {
+                            showPage('activities-page');
+                            document.getElementById('location-info').textContent = 'Using default location: San Francisco, CA';
+                            document.getElementById('activities-list').innerHTML = '<p>🥾 Sunset Trail Hike - 3.2 miles<br>🧗 Rock Climbing - 5.7 miles<br>🚴 Bike Ride - 2.1 miles</p>';
+                        }, 500);
+                    }
+                );
+            });
+
+            console.log('Event listener attached successfully');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Outset</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #console {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Outset Debug Panel</h1>
+
+    <div class="test-section">
+        <h2>1. JavaScript Loading</h2>
+        <p id="js-status">❌ Checking...</p>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Geolocation API</h2>
+        <p id="geo-status">❌ Not tested</p>
+        <button id="test-geo">Test Geolocation</button>
+        <p id="geo-result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>3. OpenStreetMap API</h2>
+        <p id="osm-status">❌ Not tested</p>
+        <button id="test-osm">Test Reverse Geocoding</button>
+        <p id="osm-result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Page Navigation</h2>
+        <button id="test-nav">Test Page Change</button>
+        <p id="nav-result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="console"></div>
+    </div>
+
+    <script>
+        // Console override
+        const consoleDiv = document.getElementById('console');
+        const originalLog = console.log;
+        const originalError = console.error;
+
+        function logToDiv(msg, type = 'log') {
+            const line = document.createElement('div');
+            line.textContent = `[${type.toUpperCase()}] ${new Date().toLocaleTimeString()}: ${msg}`;
+            consoleDiv.appendChild(line);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToDiv(args.join(' '), 'log');
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToDiv(args.join(' '), 'error');
+        };
+
+        // Test 1: JavaScript is running
+        document.getElementById('js-status').innerHTML = '✅ JavaScript is loaded and running!';
+        console.log('Debug page loaded successfully');
+
+        // Test 2: Geolocation
+        document.getElementById('test-geo').addEventListener('click', async () => {
+            console.log('Testing geolocation...');
+            document.getElementById('geo-status').innerHTML = '⏳ Testing...';
+
+            if (!navigator.geolocation) {
+                document.getElementById('geo-status').innerHTML = '❌ Geolocation not supported';
+                console.error('Geolocation API not available');
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    document.getElementById('geo-status').innerHTML = '✅ Geolocation working!';
+                    document.getElementById('geo-result').innerHTML = `Latitude: ${lat}, Longitude: ${lng}`;
+                    console.log(`Got coordinates: ${lat}, ${lng}`);
+                },
+                (error) => {
+                    document.getElementById('geo-status').innerHTML = '❌ Geolocation failed';
+                    document.getElementById('geo-result').innerHTML = `Error: ${error.message}`;
+                    console.error('Geolocation error:', error.message);
+                }
+            );
+        });
+
+        // Test 3: OpenStreetMap API
+        document.getElementById('test-osm').addEventListener('click', async () => {
+            console.log('Testing OpenStreetMap API...');
+            document.getElementById('osm-status').innerHTML = '⏳ Testing...';
+
+            try {
+                // Test with San Francisco coordinates
+                const lat = 37.7749;
+                const lng = -122.4194;
+
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`,
+                    { headers: { 'User-Agent': 'Outset-App' } }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                document.getElementById('osm-status').innerHTML = '✅ OSM API working!';
+                document.getElementById('osm-result').innerHTML = `Location: ${data.display_name}`;
+                console.log('OSM response:', data.display_name);
+            } catch (error) {
+                document.getElementById('osm-status').innerHTML = '❌ OSM API failed';
+                document.getElementById('osm-result').innerHTML = `Error: ${error.message}`;
+                console.error('OSM error:', error);
+            }
+        });
+
+        // Test 4: Check if main script functions exist
+        document.getElementById('test-nav').addEventListener('click', () => {
+            console.log('Testing navigation...');
+            const pages = document.querySelectorAll('.page');
+            if (pages.length > 0) {
+                document.getElementById('nav-result').innerHTML = `✅ Found ${pages.length} pages in DOM`;
+                console.log(`Found ${pages.length} page elements`);
+            } else {
+                document.getElementById('nav-result').innerHTML = '❌ No pages found';
+                console.error('No page elements found');
+            }
+        });
+
+        console.log('Debug panel ready');
+    </script>
+</body>
+</html>

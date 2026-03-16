@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outset - Discover Unique Outdoor Experiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <div class="hero-background" id="hero-bg"></div>
+        <div class="hero-overlay"></div>
+
+        <nav class="main-nav">
+            <div class="nav-container">
+                <div class="brand">OUTSET</div>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Discover Unique<br>Outdoor Experiences</h1>
+                <p class="hero-subtitle">From parasailing to ice climbing, find your next adventure</p>
+            </div>
+
+            <div class="location-card">
+                <h2 class="card-title">Where are you exploring?</h2>
+
+                <div class="input-group">
+                    <label class="input-label">City</label>
+                    <input type="text" id="city-input" class="input-field" placeholder="Enter city name">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">State</label>
+                    <select id="state-input" class="input-field">
+                        <option value="">Select state</option>
+                        <option value="Alabama">Alabama</option>
+                        <option value="Alaska">Alaska</option>
+                        <option value="Arizona">Arizona</option>
+                        <option value="Arkansas">Arkansas</option>
+                        <option value="California">California</option>
+                        <option value="Colorado">Colorado</option>
+                        <option value="Connecticut">Connecticut</option>
+                        <option value="Delaware">Delaware</option>
+                        <option value="Florida">Florida</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Hawaii">Hawaii</option>
+                        <option value="Idaho">Idaho</option>
+                        <option value="Illinois">Illinois</option>
+                        <option value="Indiana">Indiana</option>
+                        <option value="Iowa">Iowa</option>
+                        <option value="Kansas">Kansas</option>
+                        <option value="Kentucky">Kentucky</option>
+                        <option value="Louisiana">Louisiana</option>
+                        <option value="Maine">Maine</option>
+                        <option value="Maryland">Maryland</option>
+                        <option value="Massachusetts">Massachusetts</option>
+                        <option value="Michigan">Michigan</option>
+                        <option value="Minnesota">Minnesota</option>
+                        <option value="Mississippi">Mississippi</option>
+                        <option value="Missouri">Missouri</option>
+                        <option value="Montana">Montana</option>
+                        <option value="Nebraska">Nebraska</option>
+                        <option value="Nevada">Nevada</option>
+                        <option value="New Hampshire">New Hampshire</option>
+                        <option value="New Jersey">New Jersey</option>
+                        <option value="New Mexico">New Mexico</option>
+                        <option value="New York">New York</option>
+                        <option value="North Carolina">North Carolina</option>
+                        <option value="North Dakota">North Dakota</option>
+                        <option value="Ohio">Ohio</option>
+                        <option value="Oklahoma">Oklahoma</option>
+                        <option value="Oregon">Oregon</option>
+                        <option value="Pennsylvania">Pennsylvania</option>
+                        <option value="Rhode Island">Rhode Island</option>
+                        <option value="South Carolina">South Carolina</option>
+                        <option value="South Dakota">South Dakota</option>
+                        <option value="Tennessee">Tennessee</option>
+                        <option value="Texas">Texas</option>
+                        <option value="Utah">Utah</option>
+                        <option value="Vermont">Vermont</option>
+                        <option value="Virginia">Virginia</option>
+                        <option value="Washington">Washington</option>
+                        <option value="West Virginia">West Virginia</option>
+                        <option value="Wisconsin">Wisconsin</option>
+                        <option value="Wyoming">Wyoming</option>
+                    </select>
+                </div>
+
+                <button id="search-btn" class="primary-btn">Search Activities</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Page -->
+    <div id="loading-page" class="page">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <h2 class="loading-title">Searching for experiences...</h2>
+            <p id="loading-status" class="loading-text">Initializing search</p>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activities Page -->
+    <div id="activities-page" class="page">
+        <div class="city-background" id="city-bg"></div>
+        <div class="city-overlay"></div>
+
+        <nav class="main-nav solid">
+            <div class="nav-container">
+                <div class="brand">OUTSET</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link active">Activities</a>
+                    <a href="#" id="nav-schedule" class="nav-link">Schedule</a>
+                    <a href="#" id="nav-community" class="nav-link">Community</a>
+                    <a href="#" id="change-location" class="nav-link">Change Location</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 class="page-title" id="location-info">Loading...</h1>
+                <p class="page-subtitle" id="results-count"></p>
+                <div id="weather-widget" class="weather-widget" style="display: none;">
+                    <div class="weather-content">
+                        <div class="weather-main">
+                            <div class="weather-icon" id="weather-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                            </div>
+                            <div class="weather-temp">
+                                <span class="temp-value" id="weather-temp">--</span>
+                                <span class="temp-unit">°F</span>
+                            </div>
+                            <div class="weather-desc" id="weather-desc">Loading...</div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="weather-detail">
+                                <span class="detail-icon">💧</span>
+                                <span id="weather-humidity">--</span>% Humidity
+                            </div>
+                            <div class="weather-detail">
+                                <span class="detail-icon">💨</span>
+                                <span id="weather-wind">--</span> mph Wind
+                            </div>
+                            <div class="weather-detail" id="weather-recommendation">
+                                <span class="detail-icon">✨</span>
+                                <span id="weather-advice">Perfect for outdoor activities!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <aside class="filters-sidebar">
+                    <h3 class="filter-title">Filters</h3>
+
+                    <div class="filter-section">
+                        <h4 class="filter-heading">Activity Type</h4>
+                        <div class="filter-options" id="type-filters"></div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4 class="filter-heading">Duration</h4>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="short" class="duration-filter">
+                                <span>Under 1 hour</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="medium" class="duration-filter">
+                                <span>1-3 hours</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="long" class="duration-filter">
+                                <span>3+ hours</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="fullday" class="duration-filter">
+                                <span>Full day</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="multiday" class="duration-filter">
+                                <span>Multi-day</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4 class="filter-heading">Difficulty</h4>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="beginner" class="difficulty-filter">
+                                <span>Beginner</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="intermediate" class="difficulty-filter">
+                                <span>Intermediate</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="advanced" class="difficulty-filter">
+                                <span>Advanced</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="expert" class="difficulty-filter">
+                                <span>Expert</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4 class="filter-heading">Cost</h4>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="free" class="cost-filter">
+                                <span>Free</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="budget" class="cost-filter">
+                                <span>$ (Under $50)</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="moderate" class="cost-filter">
+                                <span>$$ ($50-150)</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="premium" class="cost-filter">
+                                <span>$$$ ($150+)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="clear-filters" class="secondary-btn">Clear All Filters</button>
+                </aside>
+
+                <div class="activities-content">
+                    <div id="activities-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Page -->
+    <div id="schedule-page" class="page">
+        <nav class="main-nav solid">
+            <div class="nav-container">
+                <div class="brand">OUTSET</div>
+                <div class="nav-links">
+                    <a href="#" id="nav-activities" class="nav-link">Activities</a>
+                    <a href="#" class="nav-link active">Schedule</a>
+                    <a href="#" id="nav-community-from-schedule" class="nav-link">Community</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 class="page-title">My Schedule</h1>
+                <p class="page-subtitle">Your planned outdoor experiences</p>
+            </div>
+
+            <div class="schedule-content">
+                <div id="schedule-container"></div>
+                <div id="empty-schedule" class="empty-state">
+                    <h2>No activities scheduled</h2>
+                    <p>Start exploring and add activities to your schedule</p>
+                    <button id="back-to-activities" class="primary-btn">Browse Activities</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Page -->
+    <div id="community-page" class="page">
+        <nav class="main-nav solid">
+            <div class="nav-container">
+                <div class="brand">OUTSET</div>
+                <div class="nav-links">
+                    <a href="#" id="nav-activities-from-community" class="nav-link">Activities</a>
+                    <a href="#" id="nav-schedule-from-community" class="nav-link">Schedule</a>
+                    <a href="#" class="nav-link active">Community</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1 class="page-title">Community</h1>
+                <p class="page-subtitle">Connect with others and plan group activities</p>
+            </div>
+
+            <!-- User Profile Setup -->
+            <div id="profile-setup" class="profile-setup" style="display: none;">
+                <div class="setup-card">
+                    <h2>Create Your Profile</h2>
+                    <p>Set up your profile to connect with other outdoor enthusiasts</p>
+                    <div class="input-group">
+                        <label class="input-label">Display Name</label>
+                        <input type="text" id="profile-name" class="input-field" placeholder="Your name">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Bio (Optional)</label>
+                        <textarea id="profile-bio" class="input-field" rows="3" placeholder="Tell others about your outdoor interests..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Interests</label>
+                        <div id="interest-selector" class="interest-selector"></div>
+                    </div>
+                    <button id="save-profile" class="primary-btn">Save Profile</button>
+                </div>
+            </div>
+
+            <!-- Community Tabs -->
+            <div id="community-content" class="community-content">
+                <div class="community-tabs">
+                    <button class="tab-btn active" data-tab="group-activities">Group Activities</button>
+                    <button class="tab-btn" data-tab="nearby-users">Nearby Users</button>
+                    <button class="tab-btn" data-tab="my-profile">My Profile</button>
+                </div>
+
+                <!-- Group Activities Tab -->
+                <div id="group-activities-tab" class="tab-content active">
+                    <div class="tab-header">
+                        <button id="create-group-activity" class="primary-btn">Create Group Activity</button>
+                    </div>
+                    <div id="group-activities-list"></div>
+                    <div id="empty-groups" class="empty-state">
+                        <h2>No group activities yet</h2>
+                        <p>Be the first to create a group activity!</p>
+                    </div>
+                </div>
+
+                <!-- Nearby Users Tab -->
+                <div id="nearby-users-tab" class="tab-content">
+                    <div id="users-list"></div>
+                    <div id="empty-users" class="empty-state">
+                        <h2>No users nearby</h2>
+                        <p>Search for a location first to see other users in the area</p>
+                    </div>
+                </div>
+
+                <!-- My Profile Tab -->
+                <div id="my-profile-tab" class="tab-content">
+                    <div id="profile-display"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Group Activity Modal -->
+    <div id="group-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Group Activity</h2>
+                <button class="modal-close" id="close-group-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-label">Activity Name</label>
+                    <input type="text" id="group-activity-name" class="input-field" placeholder="e.g., Weekend Hike at Red Rocks">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Description</label>
+                    <textarea id="group-activity-desc" class="input-field" rows="3" placeholder="What are you planning?"></textarea>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Date & Time</label>
+                    <input type="datetime-local" id="group-activity-datetime" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Max Participants</label>
+                    <input type="number" id="group-activity-max" class="input-field" value="8" min="2" max="50">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Activity Type</label>
+                    <select id="group-activity-type" class="input-field">
+                        <option value="hiking">Hiking</option>
+                        <option value="biking">Biking</option>
+                        <option value="kayaking">Kayaking</option>
+                        <option value="climbing">Climbing</option>
+                        <option value="camping">Camping</option>
+                        <option value="skiing">Skiing</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Difficulty Level</label>
+                    <select id="group-activity-difficulty" class="input-field">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-group" class="secondary-btn">Cancel</button>
+                <button id="submit-group" class="primary-btn">Create Activity</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outset Poster - 24x36</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        /* Poster container - 24in x 36in at 72 DPI = 1728px x 2592px */
+        .poster {
+            width: 1728px;
+            height: 2592px;
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background gradient */
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 800px;
+            background: linear-gradient(135deg, #0277BD 0%, #2E7D32 100%);
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 80px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .tagline {
+            font-size: 42px;
+            font-weight: 300;
+            opacity: 0.95;
+            letter-spacing: 2px;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .section-title {
+            font-size: 56px;
+            font-weight: 800;
+            color: #2E7D32;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .photo-placeholder {
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #E8F5E9 100%);
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #0277BD;
+            border: 8px solid #4DB6AC;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* To add photos: replace background with background-image: url('path-to-photo.jpg') */
+        .photo-placeholder::after {
+            content: 'Add Photo';
+            font-size: 24px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .member-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .problem-visual {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFF3E0 100%);
+            border-radius: 20px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .problem-icon {
+            font-size: 180px;
+            margin-bottom: 30px;
+        }
+
+        .problem-text h2 {
+            font-size: 56px;
+            font-weight: 800;
+            color: #D32F2F;
+            margin-bottom: 30px;
+        }
+
+        .problem-text p {
+            font-size: 32px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .barrier-list {
+            margin-top: 25px;
+            font-size: 28px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .barrier-list li {
+            margin-bottom: 15px;
+        }
+
+        /* Solution Section */
+        .solution-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .solution-text h2 {
+            font-size: 56px;
+            font-weight: 800;
+            color: #2E7D32;
+            margin-bottom: 30px;
+        }
+
+        .solution-text p {
+            font-size: 32px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .solution-visual {
+            background: linear-gradient(135deg, #E3F2FD 0%, #E8F5E9 100%);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .website-preview {
+            width: 100%;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #999;
+            border: 4px solid #4DB6AC;
+        }
+
+        .feature-list {
+            margin-top: 25px;
+            font-size: 28px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .feature-list li {
+            margin-bottom: 15px;
+        }
+
+        /* Evidence Section */
+        .evidence-section {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .evidence-card {
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1F5FE 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .evidence-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .evidence-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .evidence-desc {
+            font-size: 24px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+        }
+
+        .footer-text {
+            font-size: 28px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Print instructions */
+        .print-instructions {
+            background: #FFF9C4;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 1728px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .print-instructions h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .print-instructions p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .print-instructions strong {
+            color: #D32F2F;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .print-instructions {
+                display: none;
+            }
+            .poster {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-instructions">
+        <h3>📝 How to Edit & Print This Poster</h3>
+        <p><strong>To add photos:</strong> Replace "Add Photo" placeholders by editing the HTML - add <code>background-image: url('your-photo.jpg');</code> to each .photo-placeholder style</p>
+        <p><strong>To edit text:</strong> Right-click any text → Inspect Element → Edit directly in the HTML</p>
+        <p><strong>To export:</strong> Print (Cmd/Ctrl + P) → Save as PDF → Set size to 24x36 inches</p>
+        <p><strong>Alternative:</strong> Use browser screenshot extension to capture at high resolution</p>
+    </div>
+
+    <div class="poster">
+        <div class="content">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">OUTSET</div>
+                <div class="tagline">Discover Unique Outdoor Experiences</div>
+            </div>
+
+            <!-- Team Section -->
+            <div class="team-section">
+                <h2 class="section-title">The Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="photo-placeholder">
+                            <!-- To add photo: add style="background-image: url('victoria.jpg'); background-size: cover; background-position: center;" and remove ::after in CSS -->
+                        </div>
+                        <div class="member-name">Victoria Bliley</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="photo-placeholder">
+                            <!-- To add photo: add style="background-image: url('grant.jpg'); background-size: cover; background-position: center;" -->
+                        </div>
+                        <div class="member-name">Grant Thompson</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="photo-placeholder">
+                            <!-- To add photo: add style="background-image: url('payton.jpg'); background-size: cover; background-position: center;" -->
+                        </div>
+                        <div class="member-name">Payton Haley</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem Section -->
+            <div class="problem-section">
+                <div class="problem-visual">
+                    <div class="problem-icon">🚧</div>
+                </div>
+                <div class="problem-text">
+                    <h2>The Problem</h2>
+                    <p>College students and young adults face <strong>too many barriers</strong> when trying to spend time outside and be active.</p>
+                    <ul class="barrier-list">
+                        <li>🔍 Hard to find activities</li>
+                        <li>⏰ Difficult to schedule</li>
+                        <li>❓ Lack of information</li>
+                        <li>📱 No centralized platform</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Solution Section -->
+            <div class="solution-section">
+                <div class="solution-text">
+                    <h2>Our Solution</h2>
+                    <p>The <strong>Outset website</strong> makes discovering outdoor activities <strong>easy and streamlined</strong>.</p>
+                    <ul class="feature-list">
+                        <li>🌍 Search by location</li>
+                        <li>🎯 Filter by preferences</li>
+                        <li>📅 Schedule activities</li>
+                        <li>☀️ Weather-aware recommendations</li>
+                        <li>🗺️ Direct navigation</li>
+                    </ul>
+                </div>
+                <div class="solution-visual">
+                    <div class="website-preview">
+                        Screenshot of Outset Website
+                        <!-- To add website screenshot: style="background-image: url('outset-screenshot.png'); background-size: cover;" -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evidence Section -->
+            <div class="evidence-section">
+                <h2 class="section-title">Our Process & Evidence</h2>
+                <div class="evidence-grid">
+                    <div class="evidence-card">
+                        <div class="evidence-icon">💬</div>
+                        <div class="evidence-title">User Interviews</div>
+                        <div class="evidence-desc">Conducted interviews with diverse college students to understand their needs</div>
+                    </div>
+                    <div class="evidence-card">
+                        <div class="evidence-icon">🎨</div>
+                        <div class="evidence-title">Parallel Prototyping</div>
+                        <div class="evidence-desc">Each team member created their own prototype, refined using Claude AI</div>
+                    </div>
+                    <div class="evidence-card">
+                        <div class="evidence-icon">✅</div>
+                        <div class="evidence-title">Prototype Feedback</div>
+                        <div class="evidence-desc">Gathered user feedback on initial prototypes to iterate and improve</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-text">Making outdoor exploration accessible to everyone</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

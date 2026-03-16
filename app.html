@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outset - Discover Outdoor Activities</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Find Your Next<br><span class="gradient-text">Outdoor Adventure</span></h1>
+                <p class="hero-subtitle">Discover activities that fit your schedule, from hiking to skiing and everything in between.</p>
+                <button id="find-activities" class="cta-button">
+                    📍 Find Activities Near Me
+                </button>
+                <p class="privacy-note">We'll use your location to show nearby activities</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Activities Page -->
+    <div id="activities-page" class="page">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link active">Activities</a>
+                    <a href="#" id="nav-schedule" class="nav-link">My Schedule</a>
+                </div>
+            </div>
+        </nav>
+
+        <div style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+            <div style="margin-bottom: 2rem;">
+                <h1>Activities Near You</h1>
+                <p id="location-info" style="color: #6b7280; font-size: 1.1rem; margin-top: 0.5rem;">📍 Loading location...</p>
+            </div>
+
+            <div id="activities-container"></div>
+        </div>
+    </div>
+
+    <!-- Schedule Page -->
+    <div id="schedule-page" class="page">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Outset</div>
+                <div class="nav-links">
+                    <a href="#" id="nav-activities" class="nav-link">Activities</a>
+                    <a href="#" class="nav-link active">My Schedule</a>
+                </div>
+            </div>
+        </nav>
+
+        <div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+            <h1>My Planned Activities</h1>
+            <div id="schedule-container"></div>
+            <div id="empty-schedule" style="text-align: center; padding: 4rem; display: none;">
+                <div style="font-size: 4rem;">📅</div>
+                <h2>No activities scheduled yet</h2>
+                <p style="color: #6b7280;">Start exploring activities and add them to your schedule!</p>
+                <button id="back-to-activities" class="cta-button" style="margin-top: 1rem;">Browse Activities</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
