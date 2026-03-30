@@ -427,6 +427,31 @@
         </div>
     </div>
 
+    <!-- Schedule Activity Modal -->
+    <div id="schedule-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="schedule-modal-title">Add to Schedule</h2>
+                <button class="modal-close" onclick="closeScheduleModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: #666;">Choose when you'd like to do this activity</p>
+                <div class="input-group">
+                    <label class="input-label">Date</label>
+                    <input type="date" id="schedule-date" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Time</label>
+                    <input type="time" id="schedule-time" class="input-field" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeScheduleModal()" class="secondary-btn">Cancel</button>
+                <button onclick="confirmSchedule()" class="primary-btn">Add to Schedule</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Newsletter Signup Footer -->
     <div id="newsletter-footer" class="newsletter-footer" style="position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 1000; display: none;">
         <div style="max-width: 600px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">

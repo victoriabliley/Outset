@@ -823,61 +823,90 @@ function generateDescription(tags, category) {
 }
 
 // Add activity to calendar (iCal format)
-window.addToCalendar = function(name, description, location, address, lat, lng) {
-    // Create iCal format calendar event
-    const now = new Date();
-    const dtStart = formatDateForICal(now);
-    const dtEnd = formatDateForICal(new Date(now.getTime() + 2 * 60 * 60 * 1000)); // 2 hours default
-    const dtStamp = formatDateForICal(now);
+// Schedule modal state
+let scheduleModalData = null;
 
-    const icalContent = [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//Outset//Outdoor Activities//EN',
-        'CALSCALE:GREGORIAN',
-        'METHOD:PUBLISH',
-        'BEGIN:VEVENT',
-        `DTSTART:${dtStart}`,
-        `DTEND:${dtEnd}`,
-        `DTSTAMP:${dtStamp}`,
-        `SUMMARY:${escapeICalText(name)}`,
-        `DESCRIPTION:${escapeICalText(description + '\\n\\nPlan your ' + name + ' adventure!')}`,
-        `LOCATION:${escapeICalText(address)}`,
-        `GEO:${lat};${lng}`,
-        `URL:https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
-        'STATUS:TENTATIVE',
-        'BEGIN:VALARM',
-        'TRIGGER:-PT24H',
-        'DESCRIPTION:Reminder: ' + escapeICalText(name) + ' tomorrow',
-        'ACTION:DISPLAY',
-        'END:VALARM',
-        'END:VEVENT',
-        'END:VCALENDAR'
-    ].join('\r\n');
+// Open schedule modal
+window.openScheduleModal = function(id, name, category, distance, duration, difficulty, cost, lat, lng, address) {
+    scheduleModalData = { id, name, category, distance, duration, difficulty, cost, lat, lng, address };
 
-    // Create blob and download
-    const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `${name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    const modal = document.getElementById('schedule-modal');
+    const modalTitle = document.getElementById('schedule-modal-title');
 
-    showToast(`Calendar event created! Check your downloads.`);
+    if (modal && modalTitle) {
+        modalTitle.textContent = name;
+
+        // Set minimum date to today
+        const dateInput = document.getElementById('schedule-date');
+        const timeInput = document.getElementById('schedule-time');
+
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+            dateInput.value = today;
+        }
+
+        if (timeInput) {
+            // Set default time to 9:00 AM
+            timeInput.value = '09:00';
+        }
+
+        modal.style.display = 'flex';
+    }
 };
 
-function formatDateForICal(date) {
-    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-}
+// Close schedule modal
+window.closeScheduleModal = function() {
+    const modal = document.getElementById('schedule-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        scheduleModalData = null;
+    }
+};
 
-function escapeICalText(text) {
-    return text.replace(/\\/g, '\\\\')
-               .replace(/;/g, '\\;')
-               .replace(/,/g, '\\,')
-               .replace(/\n/g, '\\n');
-}
+// Confirm schedule addition
+window.confirmSchedule = function() {
+    const dateInput = document.getElementById('schedule-date');
+    const timeInput = document.getElementById('schedule-time');
+
+    if (!dateInput || !timeInput || !scheduleModalData) {
+        showToast('Please select a date and time');
+        return;
+    }
+
+    const selectedDate = dateInput.value;
+    const selectedTime = timeInput.value;
+
+    if (!selectedDate || !selectedTime) {
+        showToast('Please select both date and time');
+        return;
+    }
+
+    // Format date and time for display
+    const dateObj = new Date(selectedDate + 'T' + selectedTime);
+    const day = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+    const dateFormatted = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+    // Call the existing addToSchedule function
+    addToSchedule(
+        scheduleModalData.id,
+        scheduleModalData.name,
+        scheduleModalData.category,
+        day,
+        dateFormatted,
+        timeFormatted,
+        scheduleModalData.distance,
+        scheduleModalData.duration,
+        scheduleModalData.difficulty,
+        scheduleModalData.cost,
+        scheduleModalData.lat,
+        scheduleModalData.lng,
+        scheduleModalData.address
+    );
+
+    closeScheduleModal();
+};
 
 // Apply filters
 function applyFilters() {
@@ -1059,14 +1088,14 @@ function displayActivities() {
                     </div>
 
                     <div class="activity-footer">
-                        <button class="calendar-btn primary-btn" onclick="addToCalendar('${escapeQuotes(activity.name)}', '${escapeQuotes(activity.description)}', '${escapeQuotes(typeData ? typeData.label : activity.category)}', '${escapeQuotes(activity.address)}', '${activity.lat}', '${activity.lng}')">
+                        <button class="schedule-btn primary-btn" onclick="openScheduleModal('${escapeQuotes(activity.id)}', '${escapeQuotes(activity.name)}', '${activity.category}', '${activity.distance}', '${activity.duration}', '${activity.difficulty}', '${activity.cost}', '${activity.lat}', '${activity.lng}', '${escapeQuotes(activity.address)}')">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            Add to Calendar
+                            Add to Schedule
                         </button>
                     </div>
                 </div>
@@ -2041,6 +2070,16 @@ function init() {
         groupModal.addEventListener('click', (e) => {
             if (e.target === groupModal) {
                 closeGroupModal();
+            }
+        });
+    }
+
+    // Close schedule modal on background click
+    const scheduleModal = document.getElementById('schedule-modal');
+    if (scheduleModal) {
+        scheduleModal.addEventListener('click', (e) => {
+            if (e.target === scheduleModal) {
+                closeScheduleModal();
             }
         });
     }
