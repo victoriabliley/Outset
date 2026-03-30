@@ -822,24 +822,61 @@ function generateDescription(tags, category) {
     return desc;
 }
 
-// Generate time slots
-function generateTimeSlots() {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const times = ['7:00 AM', '9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM'];
-    const slots = [];
-    const today = new Date();
+// Add activity to calendar (iCal format)
+window.addToCalendar = function(name, description, location, address, lat, lng) {
+    // Create iCal format calendar event
+    const now = new Date();
+    const dtStart = formatDateForICal(now);
+    const dtEnd = formatDateForICal(new Date(now.getTime() + 2 * 60 * 60 * 1000)); // 2 hours default
+    const dtStamp = formatDateForICal(now);
 
-    for (let i = 1; i <= 3; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
-        const day = days[date.getDay()];
-        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const time = times[Math.floor(Math.random() * times.length)];
+    const icalContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Outset//Outdoor Activities//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        `DTSTART:${dtStart}`,
+        `DTEND:${dtEnd}`,
+        `DTSTAMP:${dtStamp}`,
+        `SUMMARY:${escapeICalText(name)}`,
+        `DESCRIPTION:${escapeICalText(description + '\\n\\nPlan your ' + name + ' adventure!')}`,
+        `LOCATION:${escapeICalText(address)}`,
+        `GEO:${lat};${lng}`,
+        `URL:https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
+        'STATUS:TENTATIVE',
+        'BEGIN:VALARM',
+        'TRIGGER:-PT24H',
+        'DESCRIPTION:Reminder: ' + escapeICalText(name) + ' tomorrow',
+        'ACTION:DISPLAY',
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+    ].join('\r\n');
 
-        slots.push({ day, date: dateStr, time });
-    }
+    // Create blob and download
+    const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
 
-    return slots;
+    showToast(`Calendar event created! Check your downloads.`);
+};
+
+function formatDateForICal(date) {
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+}
+
+function escapeICalText(text) {
+    return text.replace(/\\/g, '\\\\')
+               .replace(/;/g, '\\;')
+               .replace(/,/g, '\\,')
+               .replace(/\n/g, '\\n');
 }
 
 // Apply filters
@@ -960,7 +997,6 @@ function displayActivities() {
     let html = '';
     activities.forEach(activity => {
         const typeData = ACTIVITY_TYPES[activity.category];
-        const slots = generateTimeSlots();
 
         const costLabels = { free: 'Free', budget: '$', moderate: '$$', premium: '$$$' };
         const durationLabels = { short: '<1hr', medium: '1-3hrs', long: '3+ hrs', fullday: 'Full day', multiday: 'Multi-day' };
@@ -1023,19 +1059,15 @@ function displayActivities() {
                     </div>
 
                     <div class="activity-footer">
-                        <div class="time-slots">
-                            ${slots.map((slot, idx) => `
-                                <div class="time-slot">
-                                    <div class="time-info">
-                                        <div class="time-day">${slot.day}, ${slot.date}</div>
-                                        <div class="time-hour">${slot.time}</div>
-                                    </div>
-                                    <button class="add-btn" onclick="addToSchedule('${activity.id}', '${escapeQuotes(activity.name)}', '${activity.category}', '${slot.day}', '${slot.date}', '${slot.time}', '${activity.distance}', '${activity.duration}', '${activity.difficulty}', '${activity.cost}', '${activity.lat}', '${activity.lng}', '${escapeQuotes(activity.address)}')">
-                                        Add
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
+                        <button class="calendar-btn primary-btn" onclick="addToCalendar('${escapeQuotes(activity.name)}', '${escapeQuotes(activity.description)}', '${escapeQuotes(typeData ? typeData.label : activity.category)}', '${escapeQuotes(activity.address)}', '${activity.lat}', '${activity.lng}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Add to Calendar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2018,7 +2050,109 @@ function init() {
 
     console.log('=== App Initialized Successfully ===');
     console.log('Ready to search! Enter a city and state, then click "Search Activities"');
+
+    // Initialize newsletter banner
+    initNewsletter();
 }
+
+// ============================================
+// NEWSLETTER / MAILCHIMP INTEGRATION
+// ============================================
+
+function initNewsletter() {
+    const newsletterFooter = document.getElementById('newsletter-footer');
+    const closeBtn = document.getElementById('close-newsletter');
+    const form = document.getElementById('mc-embedded-subscribe-form');
+
+    if (!newsletterFooter) return;
+
+    // Check if user has dismissed the banner
+    const dismissed = localStorage.getItem('newsletter_dismissed');
+
+    // Show newsletter banner after 10 seconds if not dismissed
+    if (!dismissed) {
+        setTimeout(() => {
+            newsletterFooter.style.display = 'block';
+        }, 10000); // 10 seconds delay
+    }
+
+    // Handle close button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            newsletterFooter.style.display = 'none';
+            localStorage.setItem('newsletter_dismissed', 'true');
+        });
+    }
+
+    // Handle form submission
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('newsletter-email').value;
+
+            if (!email) {
+                showToast('Please enter a valid email address');
+                return;
+            }
+
+            // TODO: Replace with actual Mailchimp API endpoint
+            // Get this from: Mailchimp > Audience > Signup forms > Embedded forms
+            // Look for the form action URL
+            const MAILCHIMP_FORM_ACTION = 'YOUR_MAILCHIMP_FORM_ACTION_URL';
+
+            // For now, store locally and show success
+            // Once you have the Mailchimp form action URL, replace this with actual submission
+            try {
+                // Store email locally
+                const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+                if (!subscribers.includes(email)) {
+                    subscribers.push(email);
+                    localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+                }
+
+                // Show success message
+                showToast('Thanks for subscribing! 🎉');
+                newsletterFooter.style.display = 'none';
+                localStorage.setItem('newsletter_dismissed', 'true');
+
+                // Track event with Umami if available
+                if (window.umami) {
+                    window.umami.track('newsletter-signup', { email: email.split('@')[1] }); // Only track domain for privacy
+                }
+
+                // TODO: When you configure Mailchimp, uncomment this to send to Mailchimp:
+                // const formData = new FormData();
+                // formData.append('EMAIL', email);
+                // await fetch(MAILCHIMP_FORM_ACTION, {
+                //     method: 'POST',
+                //     body: formData,
+                //     mode: 'no-cors'
+                // });
+
+            } catch (error) {
+                console.error('Newsletter signup error:', error);
+                showToast('Something went wrong. Please try again.');
+            }
+        });
+    }
+}
+
+// Track custom events for analytics
+window.trackEvent = function(eventName, eventData = {}) {
+    // Umami tracking
+    if (window.umami) {
+        window.umami.track(eventName, eventData);
+    }
+
+    // Mailchimp events (if using Mailchimp's JavaScript SDK)
+    if (window.dojoRequire && window.dojoRequire(['mojo/signup-forms/Loader'])) {
+        // Mailchimp tracking available
+        console.log('Mailchimp event:', eventName, eventData);
+    }
+
+    console.log('Event tracked:', eventName, eventData);
+};
 
 // Start
 console.log('Document ready state:', document.readyState);
