@@ -38,6 +38,21 @@ body {
     display: block;
 }
 
+/* Schedule and Community Page Backgrounds */
+#schedule-page,
+#community-page {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    background-attachment: fixed;
+}
+
+#schedule-page .page-title,
+#schedule-page .page-subtitle,
+#community-page .page-title,
+#community-page .page-subtitle {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 /* Navigation */
 .main-nav {
     position: fixed;
