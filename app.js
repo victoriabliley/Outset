@@ -2090,8 +2090,9 @@ function init() {
     console.log('=== App Initialized Successfully ===');
     console.log('Ready to search! Enter a city and state, then click "Search Activities"');
 
-    // Initialize newsletter banner
+    // Initialize newsletter banner and landing page signup
     initNewsletter();
+    initLandingNewsletter();
 }
 
 // ============================================
@@ -2108,11 +2109,11 @@ function initNewsletter() {
     // Check if user has dismissed the banner
     const dismissed = localStorage.getItem('newsletter_dismissed');
 
-    // Show newsletter banner after 10 seconds if not dismissed
+    // Show newsletter banner after 5 seconds if not dismissed
     if (!dismissed) {
         setTimeout(() => {
             newsletterFooter.style.display = 'block';
-        }, 10000); // 10 seconds delay
+        }, 5000); // 5 seconds delay
     }
 
     // Handle close button
@@ -2174,6 +2175,62 @@ function initNewsletter() {
             }
         });
     }
+}
+
+// Handle landing page newsletter form
+function initLandingNewsletter() {
+    const landingForm = document.getElementById('landing-newsletter-form');
+
+    if (!landingForm) return;
+
+    landingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('landing-newsletter-email').value;
+
+        if (!email) {
+            showToast('Please enter a valid email address');
+            return;
+        }
+
+        // Mailchimp form action URL
+        const MAILCHIMP_FORM_ACTION = 'https://app.us7.list-manage.com/subscribe/post?u=afca0485209218658cbbdc06b&id=3acc426a0c&f_id=00ae8ce0f0';
+
+        try {
+            // Submit to Mailchimp
+            const formData = new FormData();
+            formData.append('EMAIL', email);
+            formData.append('b_afca0485209218658cbbdc06b_3acc426a0c', ''); // Honeypot field
+
+            // Send to Mailchimp
+            await fetch(MAILCHIMP_FORM_ACTION, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            });
+
+            // Store locally as backup
+            const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+            if (!subscribers.includes(email)) {
+                subscribers.push(email);
+                localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+            }
+
+            // Show success message
+            showToast('Thanks for subscribing! 🎉');
+            document.getElementById('landing-newsletter-email').value = '';
+            localStorage.setItem('newsletter_dismissed', 'true');
+
+            // Track event with Umami if available
+            if (window.umami) {
+                window.umami.track('newsletter-signup', { email: email.split('@')[1] });
+            }
+
+        } catch (error) {
+            console.error('Newsletter signup error:', error);
+            showToast('Something went wrong. Please try again.');
+        }
+    });
 }
 
 // Track custom events for analytics
