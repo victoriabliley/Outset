@@ -2135,15 +2135,23 @@ function initNewsletter() {
                 return;
             }
 
-            // TODO: Replace with actual Mailchimp API endpoint
-            // Get this from: Mailchimp > Audience > Signup forms > Embedded forms
-            // Look for the form action URL
-            const MAILCHIMP_FORM_ACTION = 'YOUR_MAILCHIMP_FORM_ACTION_URL';
+            // Mailchimp form action URL
+            const MAILCHIMP_FORM_ACTION = 'https://app.us7.list-manage.com/subscribe/post?u=afca0485209218658cbbdc06b&id=3acc426a0c&f_id=00ae8ce0f0';
 
-            // For now, store locally and show success
-            // Once you have the Mailchimp form action URL, replace this with actual submission
             try {
-                // Store email locally
+                // Submit to Mailchimp
+                const formData = new FormData();
+                formData.append('EMAIL', email);
+                formData.append('b_afca0485209218658cbbdc06b_3acc426a0c', ''); // Honeypot field
+
+                // Send to Mailchimp (no-cors mode since Mailchimp doesn't support CORS)
+                await fetch(MAILCHIMP_FORM_ACTION, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                });
+
+                // Also store locally as backup
                 const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
                 if (!subscribers.includes(email)) {
                     subscribers.push(email);
@@ -2159,15 +2167,6 @@ function initNewsletter() {
                 if (window.umami) {
                     window.umami.track('newsletter-signup', { email: email.split('@')[1] }); // Only track domain for privacy
                 }
-
-                // TODO: When you configure Mailchimp, uncomment this to send to Mailchimp:
-                // const formData = new FormData();
-                // formData.append('EMAIL', email);
-                // await fetch(MAILCHIMP_FORM_ACTION, {
-                //     method: 'POST',
-                //     body: formData,
-                //     mode: 'no-cors'
-                // });
 
             } catch (error) {
                 console.error('Newsletter signup error:', error);
